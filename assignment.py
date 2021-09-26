@@ -186,40 +186,83 @@ def addNewStudent():
             print("Student ID already exists, please try again")
             break
 
+
+def displayModificationMenu():
+    print("-----------------------------------")
+    print ("1: Name")
+    print ("2. Course")
+    print ("3. Date of Birth")
+    print ("4. Date of Registration")
+    print ("5. Exit")
+    print("-----------------------------------")
+
+def modifyNameWithId(id):
+    newName = getStudentName()
+    for x in studentData:
+        if(str(id) == str(x[0])):
+            x[1] = newName
+        
+def modifyCourseWithId(id):
+    newCourse = getStudentCourse()
+    for x in studentData:
+        if(str(id) == str(x[0])):
+            x[4] = newCourse
+
+def modifyDateOfBirthWithId(id):
+    newDateOfBirthWithId = getStudentDateOfBirth()
+    newDateOfBirthWithId = getStrDateFormat(newDateOfBirthWithId)
+    for x in studentData:
+        if(str(id) == str(x[0])):
+            x[2] = newDateOfBirthWithId
+
+def modifyDateOfRegistrationWithId(id):
+    newDateOfBirthWithId = getStudentDateOfRegistration()
+    newDateOfBirthWithId = getStrDateFormat(newDateOfBirthWithId)
+    for x in studentData:
+        if(str(id) == str(x[0])):
+            x[3] = newDateOfBirthWithId
+
 def modifyStudentData():
-    checkData = printInfo()
-    if checkData == True:        
-        num = int(input("Please select student record number to modify, or 0 to exit: "))
-        num = num - 1
-        if num < -1 or num > len(studentData):
-            print("Incorrect ID")
-        elif num == -1:
-            pass
-        else:
-            if studentData[num] in studentData:
-                while (True):
-                    studentId = getStudentId()
-                    if(not studentId == None and not studentId == 'X'):
-                        studentName = getStudentName()
-                        if(not studentName == "" and not studentName == 'X'):
-                            studentDateOfBirth = getStudentDateOfBirth()
-                            if(not studentDateOfBirth == None and not studentDateOfBirth == 'X'):
-                                studentDateOfRegistrationYear = getStudentDateOfRegistration () 
-                                if(not studentDateOfRegistrationYear == None and not studentDateOfRegistrationYear == 'X'):
-                                    studentCourse = getStudentCourse()
-                                    dateOfBirth = getStrDateFormat(studentDateOfBirth)
-                                    registrationDate = getStrDateFormat(studentDateOfRegistrationYear)
-                                    modifiedData = [studentId, studentName, dateOfBirth,registrationDate, studentCourse]
-                                    studentData[num] = modifiedData
-                                    print("Record modified successfully")
-                    print("Continue modify another new record (Y/N)? ")
-                    option = input()
-                    if(option.upper() == 'N'):
-                        break
-                    elif(option.upper() == 'Y'):
-                        modifyStudentData()
+    idExistStatus = False
+
+    id = input("Please enter student id to modify: ")
+
+    if(len(studentData)>0):
+        
+        idExistStatus = checkStudentExist(id)
+        
+        if(idExistStatus == True):
+            
+            for x in studentData:
+                if(str(id) == str(x[0])):
+                    print("Studen details")
+                    print("Student id: " + x[0])
+                    print("Student name: " + x[1])
+                    print("Student course: " + x[2])
+                    print("Student date of birth: " + x[3])
+                    print("Student registration date: " + x[4])
+
+            displayModificationMenu()
+            
+            option = input("Please select element to modify: ") 
+
+            if(option == "1"):
+                modifyNameWithId(id)
+            elif(option == "2"):
+                modifyCourseWithId(id)
+            elif(option == "3"):
+                modifyDateOfBirthWithId(id)
+            elif(option == "4"):
+                modifyDateOfRegistrationWithId(id)
+            else:
+                print("Error, Please input the available option only")
+            
+
+        if(idExistStatus == False):
+            print("Error student record id - " + id + " not found")
+                
     else:
-        print("Record does not exist!")
+        print("No record found")
 
 def searchStudent():
     search_item = input("Search: ")
