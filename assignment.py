@@ -224,7 +224,6 @@ def modifyStudentData():
 def searchStudent():
     search_item = input("Search: ")
     searchCount = 0
-    foundResults = []
     if not search_item:
         print("No input detected")
     else:
