@@ -19,8 +19,8 @@ def printCourse():
 
 def menu():
     option = 0
-    inputOptionStatus = False
-    while (inputOptionStatus == False):
+    run = True
+    while (run == True):
         mainMenu()
         option = input("Please input option no: ")
         if (option == "1"):
@@ -32,8 +32,8 @@ def menu():
         elif (option == "4"):
             printInfo()
         elif (option == "5"):
-            inputOptionStatus = True
-            break 
+            run = False
+            return run 
         else:
             print ("Unvalid option, please enter again")
 
@@ -125,10 +125,10 @@ def getStudentDateOfRegistration():
         elif(datevalid == False):    
             print("Error, please enter valid date of registration")
         else:
-            studentDateOfRegistrationYear = datetime.date(int(dateOfRegistrationYear), int(dateOfRegistrationMonth), int(dateOfRegistrationDay))
-            return studentDateOfRegistrationYear
+            studentDateOfRegistration = datetime.date(int(dateOfRegistrationYear), int(dateOfRegistrationMonth), int(dateOfRegistrationDay))
+            return studentDateOfRegistration
 
-def getStrDateFormat(date):
+def formatStrDateFormat(date):
     dateStr = date.strftime("%d")
     monthStr = date.strftime("%m")
     yearStr = date.strftime("%Y")
@@ -144,7 +144,7 @@ def getStudentCourse():
     printCourse()
     courseValid = False
     while (True):
-        print("Please enter student course, 'X' to exit")
+        print("Please enter student course(short form), 'X' to exit")
         course = input()
         if(not course.upper() == 'X'):
             courseValid = checkCourseValid(course)
@@ -161,7 +161,7 @@ def addNewStudent():
     studentName = ""
     studentID = None
     studentDateOfBirth = None
-    studentDateOfRegistrationYear = None
+    studentDateOfRegistration = None
     studentCourse = ""
     result = False
     while (True):
@@ -171,22 +171,27 @@ def addNewStudent():
             if(not studentName == "" and not studentName == 'X'):
                 studentDateOfBirth = getStudentDateOfBirth()
                 if(not studentDateOfBirth == None and not studentDateOfBirth == 'X'):
-                    studentDateOfRegistrationYear = getStudentDateOfRegistration () 
-                    if(not studentDateOfRegistrationYear == None and not studentDateOfRegistrationYear == 'X'):
-                        studentCourse = getStudentCourse()
-                        dateOfBirth = getStrDateFormat(studentDateOfBirth)
-                        registrationDate = getStrDateFormat(studentDateOfRegistrationYear)
+                    studentDateOfRegistration = getStudentDateOfRegistration () 
+                    if(not studentDateOfRegistration == None and not studentDateOfRegistration == 'X'):
+                        studentCourse = getStudentCourse().upper()
+                        dateOfBirth = formatStrDateFormat(studentDateOfBirth)
+                        registrationDate = formatStrDateFormat(studentDateOfRegistration)
                         studentData.append([studentId, studentName, dateOfBirth, 
                                             registrationDate, studentCourse])
                         print("Record added successfully")
-        print("Continue add another new record (Y/N)? ")
-        option = input()
+
+        option = ""
+        while (not option.upper() == 'N' and not option.upper() == 'Y'):
+            print("Continue add another new record Y = Yes/ N = No (Y/N)? ")
+            option = input()
+            if(option.upper() == 'N'):
+                option = 'N'
+            elif(option.upper() == 'Y'):
+                pass
+            else:
+                print("Error, invalid option")
+        
         if(option.upper() == 'N'):
-            break
-        elif(option.upper() == 'Y'):
-            pass
-        else:
-            print("Student ID already exists, please try again")
             break
 
 
@@ -213,14 +218,14 @@ def modifyCourseWithId(id):
 
 def modifyDateOfBirthWithId(id):
     newDateOfBirthWithId = getStudentDateOfBirth()
-    newDateOfBirthWithId = getStrDateFormat(newDateOfBirthWithId)
+    newDateOfBirthWithId = getStudentDateOfBirth(newDateOfBirthWithId)
     for x in studentData:
         if(str(id) == str(x[0])):
             x[2] = newDateOfBirthWithId
 
 def modifyDateOfRegistrationWithId(id):
     newDateOfBirthWithId = getStudentDateOfRegistration()
-    newDateOfBirthWithId = getStrDateFormat(newDateOfBirthWithId)
+    newDateOfBirthWithId = formatStrDateFormat(newDateOfBirthWithId)
     for x in studentData:
         if(str(id) == str(x[0])):
             x[3] = newDateOfBirthWithId
@@ -238,12 +243,15 @@ def modifyStudentData():
             
             for x in studentData:
                 if(str(id) == str(x[0])):
+                    for shorForm, fullName in courseDist.items():
+                        if (str(x[4]) == shorForm):
+                            fullCourseName = fullName
                     print("Student details")
                     print("Student id: " + x[0])
                     print("Student name: " + x[1])
                     print("Student date of birth: " + x[2])
                     print("Student registration date: " + x[3])
-                    print("Student course: " + x[4])
+                    print("Student course: " + x[4] + ' - ' + fullCourseName)
 
             displayModificationMenu()
             
@@ -268,7 +276,7 @@ def modifyStudentData():
         print("No record found")
 
 def searchStudent():
-    search_item = input("Search: ")
+    search_item = input("Student id: ")
     searchCount = 0
     if not search_item:
         print("No input detected")
@@ -277,12 +285,17 @@ def searchStudent():
             print("Found search results: \n")
             for x in studentData:
                 if search_item in x[0]:
+                    for shorForm, fullName in courseDist.items():
+                        if (str(x[4]) == shorForm):
+                            fullCourseName = fullName
                     print("Student details")
                     print("Student id: " + x[0])
                     print("Student name: " + x[1])
                     print("Student date of birth: " + x[2])
                     print("Student registration date: " + x[3])
-                    print("Student course: " + x[4])
+
+                    print("Student course: " + x[4] + " - " + fullCourseName)
+                    
                     searchCount = searchCount + 1
             if searchCount == 0:
                 print("No relevant results found")
@@ -291,12 +304,15 @@ def searchStudent():
 
 def printInfo():
     printCourse()
-    course = input("Course: ")
+    course = input("Course: ").upper()
     outputList = []
-    
+
     if len(studentData) > 0:        
         for x in studentData:
-            if str(x[4]) in course:
+            if not str(x[4]) in course:
+                if course in str(courseDist.values()).upper(): 
+                    outputList.append(x)
+            else:
                 outputList.append(x)
         if len(outputList) > 0:
             for x in outputList:
@@ -313,10 +329,10 @@ def programStart():
     global courseDist
     courseDist = {'IT':'Information Technology', 'CS':'Computer Science', 'ME':'Mechanical Engineering'}
     global studentData
-    # studentData = [["1","2"],["3","4"]] dummy
     studentData = []
-    while (True):
-        menu()
+    runStatus = True
+    while (runStatus == True):
+        runStatus = menu()
 
 # main
 def main():
