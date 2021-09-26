@@ -11,6 +11,12 @@ def mainMenu():
     print("-----------------------------------")
     print("\n")
 
+def printCourse():
+    print("--------Course List----------------")
+    for x in courseDist:
+        print(x, ' - ', courseDist[x])
+    print("-----------------------------------")
+
 def menu():
     option = 0
     inputOptionStatus = False
@@ -135,10 +141,7 @@ def checkCourseValid(course):
         return False
 
 def getStudentCourse():
-    print("--------Course List----------------")
-    for x in courseDist:
-        print(x, ' - ', courseDist[x])
-    print("-----------------------------------")
+    printCourse()
     courseValid = False
     while (True):
         print("Please enter student course, 'X' to exit")
@@ -235,12 +238,12 @@ def modifyStudentData():
             
             for x in studentData:
                 if(str(id) == str(x[0])):
-                    print("Studen details")
+                    print("Student details")
                     print("Student id: " + x[0])
                     print("Student name: " + x[1])
-                    print("Student course: " + x[2])
-                    print("Student date of birth: " + x[3])
-                    print("Student registration date: " + x[4])
+                    print("Student date of birth: " + x[2])
+                    print("Student registration date: " + x[3])
+                    print("Student course: " + x[4])
 
             displayModificationMenu()
             
@@ -274,7 +277,12 @@ def searchStudent():
             print("Found search results: \n")
             for x in studentData:
                 if search_item in x[0]:
-                    print(x)
+                    print("Student details")
+                    print("Student id: " + x[0])
+                    print("Student name: " + x[1])
+                    print("Student date of birth: " + x[2])
+                    print("Student registration date: " + x[3])
+                    print("Student course: " + x[4])
                     searchCount = searchCount + 1
             if searchCount == 0:
                 print("No relevant results found")
@@ -282,16 +290,24 @@ def searchStudent():
             print("There is no data recorded")
 
 def printInfo():
-    num=1
+    printCourse()
+    course = input("Course: ")
+    outputList = []
+    
     if len(studentData) > 0:        
-        print("No. \tID \t\tName \tDate of birth \tRegistered date \tCourse")
         for x in studentData:
-            print(num,"\t", x[0],"\t",x[1],"\t",x[2], "\t", x[3], "\t", x[4])
-            num = num+1
-        return True
+            if str(x[4]) in course:
+                outputList.append(x)
+        if len(outputList) > 0:
+            for x in outputList:
+                print("Student details")
+                print("Student id: ", x[0])
+                print("Student name: ", x[1])
+                print("Student date of birth: ", x[2])
+                print("Student registration date: ", x[3])
+                print("Student course: ", x[4])
     else:
         print("There is no data recorded")
-        return False
 
 def programStart():
     global courseDist
