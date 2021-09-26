@@ -190,7 +190,19 @@ def addNewStudent():
             break
 
 def modifyStudentData():
-    print("")
+    printInfo()
+    num = int(input("Please select student record number to modify: "))
+    num = num - 1
+    if student_list[num] in student_list:
+        name = input("Student name: ")
+        student_id = input("Student ID: ")
+        course = input("Student Course: ")
+        student = [name,student_id,course]
+        student_list[num] = student
+    elif num < 1:
+        print("Incorrect ID")
+    else:
+        print("Record does not exist!")
     
 
 def searchStudent():
@@ -216,9 +228,9 @@ def searchStudent():
 
 def printInfo():
     num=1
-    print("No. \t\tID \t\tName \t\tDate of birth \t\tRegistered date \t\tCourse")
+    print("No. \tID \t\tName \tDate of birth \tRegistered date \tCourse")
     for x in studentData:
-        print(num,"\t\t", x[0],"\t\t",x[1],"\t\t",x[2], "\t\t", x[3], "\t\t", x[4])
+        print(num,"\t", x[0],"\t",x[1],"\t",x[2], "\t", x[3], "\t", x[4])
         num = num+1
 
 def programStart():
