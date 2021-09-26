@@ -41,14 +41,15 @@ def getStudentName():
         elif (studentName.replace(" ","") == ""):
             print("Student name cannot be empty")
         else:
-            return studentName       
+            return studentName   
 
 def checkStudentExist(id):
-
+    flag = False
     if(len(studentData)>0):
         for x in studentData:
             if(str(id) == str(x[0])):
-                return True
+                flag = True
+    return flag
 
 def getStudentId():
     while (True):
@@ -171,8 +172,10 @@ def addNewStudent():
                     studentDateOfRegistrationYear = getStudentDateOfRegistration () 
                     if(not studentDateOfRegistrationYear == None and not studentDateOfRegistrationYear == 'X'):
                         studentCourse = getStudentCourse()
-                        studentData.append([studentId, studentName, studentDateOfBirth, 
-                                            studentDateOfRegistrationYear, studentCourse])
+                        dateOfBirth = getStrDateFormat(studentDateOfBirth)
+                        registrationDate = getStrDateFormat(studentDateOfRegistrationYear)
+                        studentData.append([studentId, studentName, dateOfBirth, 
+                                            registrationDate, studentCourse])
                         print("Record added successfully")
 
         print("Continue add another new record (Y/N)? ")
@@ -192,18 +195,30 @@ def modifyStudentData():
 
 def searchStudent():
     search_item = input("Search: ")
-    print("Search results: ")
-    for x in studentData:
-        j = 0
-        for j in range(4):
-            if search_item in x[j]:
-                print(x)
-            j = j + 1
+    searchCount = 0
+    foundResults = []
+    if not search_item:
+        print("No input detected")
+    else:
+        print("Found search results: \n")
+        if len(studentData) > 0:
+            for x in studentData:
+                j = 0
+                for j in range(4):
+                    if search_item in x[j]:
+                        print(x)
+                        searchCount = searchCount + 1
+                    j = j + 1
+            if searchCount == 0:
+                print("No relevant results found")
+        else:
+            print("There is no data recorded")
 
 def printInfo():
     num=1
+    print("No. \t\tID \t\tName \t\tDate of birth \t\tRegistered date \t\tCourse")
     for x in studentData:
-        print("No.",num,"-", x[0],"   ",x[1],"   ",x[2], "   ", x[3], "   ", x[4])
+        print(num,"\t\t", x[0],"\t\t",x[1],"\t\t",x[2], "\t\t", x[3], "\t\t", x[4])
         num = num+1
 
 def programStart():
