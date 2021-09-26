@@ -161,7 +161,6 @@ def addNewStudent():
     studentDateOfRegistrationYear = None
     studentCourse = ""
     result = False
-
     while (True):
         studentId = getStudentId()
         if(not studentId == None and not studentId == 'X'):
@@ -177,10 +176,8 @@ def addNewStudent():
                         studentData.append([studentId, studentName, dateOfBirth, 
                                             registrationDate, studentCourse])
                         print("Record added successfully")
-
         print("Continue add another new record (Y/N)? ")
         option = input()
-
         if(option.upper() == 'N'):
             break
         elif(option.upper() == 'Y'):
@@ -190,20 +187,39 @@ def addNewStudent():
             break
 
 def modifyStudentData():
-    printInfo()
-    num = int(input("Please select student record number to modify: "))
-    num = num - 1
-    if student_list[num] in student_list:
-        name = input("Student name: ")
-        student_id = input("Student ID: ")
-        course = input("Student Course: ")
-        student = [name,student_id,course]
-        student_list[num] = student
-    elif num < 1:
-        print("Incorrect ID")
+    checkData = printInfo()
+    if checkData == True:        
+        num = int(input("Please select student record number to modify, or 0 to exit: "))
+        num = num - 1
+        if num < -1 or num > len(studentData):
+            print("Incorrect ID")
+        elif num == -1:
+            pass
+        else:
+            if studentData[num] in studentData:
+                while (True):
+                    studentId = getStudentId()
+                    if(not studentId == None and not studentId == 'X'):
+                        studentName = getStudentName()
+                        if(not studentName == "" and not studentName == 'X'):
+                            studentDateOfBirth = getStudentDateOfBirth()
+                            if(not studentDateOfBirth == None and not studentDateOfBirth == 'X'):
+                                studentDateOfRegistrationYear = getStudentDateOfRegistration () 
+                                if(not studentDateOfRegistrationYear == None and not studentDateOfRegistrationYear == 'X'):
+                                    studentCourse = getStudentCourse()
+                                    dateOfBirth = getStrDateFormat(studentDateOfBirth)
+                                    registrationDate = getStrDateFormat(studentDateOfRegistrationYear)
+                                    modifiedData = [studentId, studentName, dateOfBirth,registrationDate, studentCourse]
+                                    studentData[num] = modifiedData
+                                    print("Record modified successfully")
+                    print("Continue modify another new record (Y/N)? ")
+                    option = input()
+                    if(option.upper() == 'N'):
+                        break
+                    elif(option.upper() == 'Y'):
+                        modifyStudentData()
     else:
         print("Record does not exist!")
-    
 
 def searchStudent():
     search_item = input("Search: ")
@@ -212,15 +228,12 @@ def searchStudent():
     if not search_item:
         print("No input detected")
     else:
-        print("Found search results: \n")
         if len(studentData) > 0:
+            print("Found search results: \n")
             for x in studentData:
-                j = 0
-                for j in range(4):
-                    if search_item in x[j]:
-                        print(x)
-                        searchCount = searchCount + 1
-                    j = j + 1
+                if search_item in x[0]:
+                    print(x)
+                    searchCount = searchCount + 1
             if searchCount == 0:
                 print("No relevant results found")
         else:
@@ -228,10 +241,15 @@ def searchStudent():
 
 def printInfo():
     num=1
-    print("No. \tID \t\tName \tDate of birth \tRegistered date \tCourse")
-    for x in studentData:
-        print(num,"\t", x[0],"\t",x[1],"\t",x[2], "\t", x[3], "\t", x[4])
-        num = num+1
+    if len(studentData) > 0:        
+        print("No. \tID \t\tName \tDate of birth \tRegistered date \tCourse")
+        for x in studentData:
+            print(num,"\t", x[0],"\t",x[1],"\t",x[2], "\t", x[3], "\t", x[4])
+            num = num+1
+        return True
+    else:
+        print("There is no data recorded")
+        return False
 
 def programStart():
     global courseDist
