@@ -49,19 +49,39 @@ def getStudentName():
         else:
             return studentName       
 
+def checkStudentExist(id):
+
+    if(len(studentData)>0):
+        for x in studentData:
+            if(str(id) == str(x[0])):
+                return True
+
 def getStudentId():
 
     while (True):
         print("Please enter student id, 'X' to exit")
-
+        idExistStatus = False
         studentId = input()
-
+        idExistStatus = checkStudentExist(studentId)
+        
         if (studentId.upper() == "X"):
             return studentId 
         elif (studentId.replace(" ","") == "" or not studentId.isdigit()):
             print("Student name cannot be empty and must be digit")
         else:
-            return studentId
+            if(idExistStatus == True):
+                option = ""
+                while (not option == "" or not option.upper() == 'R' or not option.upper() == 'X'):
+                    print("Student id exist, Press X to exit, R to reenter")
+                    option = input()
+                    if(str(option.upper()) == 'R'):
+                        break
+                    elif(str(option.upper()) == 'X'):
+                        return None
+                    else:
+                        print("Error, Invalid option")
+            else:
+                return studentId
 
 def checkDateValid(year, month, day):
     correctDate = None
@@ -139,11 +159,6 @@ def getStudentCourse():
         else:
             return course
 
-# def checkStudentExist():
-#     exist = False
-#     if(len(studentData)>0):
-
-#     else
 
 def addNewStudent():
     print("")
@@ -168,11 +183,12 @@ def addNewStudent():
                                             studentDateOfRegistrationYear, studentCourse])
                         print("Record added successfully")
 
-        option = input("Continue add another new record (Y/N)?")
+        print("Continue add another new record (Y/N)? ")
+        option = input()
 
-        if(option == 'N'):
+        if(option.upper() == 'N'):
             break
-        elif(option == 'Y'):
+        elif(option.upper() == 'Y'):
             pass
         else:
             print("Error, invalid option")
@@ -191,9 +207,12 @@ def programStart():
     global courseDist
     courseDist = {'IT':'Information Technology', 'CS':'Computer Science'}
     global studentData
+    # studentData = [["1","2"],["3","4"]] dummy
     studentData = []
-    menu()
+    while (True):
+        menu()
 
+# main
 def main():
     programStart()
 
