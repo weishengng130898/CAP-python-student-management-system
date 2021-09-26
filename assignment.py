@@ -43,16 +43,38 @@ def getStudentName():
         else:
             return studentName       
 
+def checkStudentExist(id):
+
+    if(len(studentData)>0):
+        for x in studentData:
+            if(str(id) == str(x[0])):
+                return True
+
 def getStudentId():
     while (True):
         print("Please enter student id, 'X' to exit")
+        idExistStatus = False
         studentId = input()
+        idExistStatus = checkStudentExist(studentId)
+        
         if (studentId.upper() == "X"):
             return studentId 
         elif (studentId.replace(" ","") == "" or not studentId.isdigit()):
             print("Student name cannot be empty and must be digit")
         else:
-            return studentId
+            if(idExistStatus == True):
+                option = ""
+                while (not option == "" or not option.upper() == 'R' or not option.upper() == 'X'):
+                    print("Student id exist, Press X to exit, R to reenter")
+                    option = input()
+                    if(str(option.upper()) == 'R'):
+                        break
+                    elif(str(option.upper()) == 'X'):
+                        return None
+                    else:
+                        print("Error, Invalid option")
+            else:
+                return studentId
 
 def checkDateValid(year, month, day):
     correctDate = None
@@ -129,15 +151,6 @@ def getStudentCourse():
         else:
             return course
 
-def checkStudentExist(searchItem):
-     existFlag = False
-     if(len(studentData)>0):
-         for student in studentData:
-             if student[0] == searchItem:
-                 print(student[0])
-                 existFlag = True
-     else:
-         return existFlag
 
 def addNewStudent():
     print("")
@@ -150,30 +163,25 @@ def addNewStudent():
 
     while (True):
         studentId = getStudentId()
-        studentExist = checkStudentExist(studentId)
-        if studentExist == False:
-            if(not studentId == None and not studentId == 'X'):
-                studentName = getStudentName()
-                if(not studentName == "" and not studentName == 'X'):
-                    studentDateOfBirth = getStudentDateOfBirth()
-                    if(not studentDateOfBirth == None and not studentDateOfBirth == 'X'):
-                        studentDateOfRegistrationYear = getStudentDateOfRegistration() 
-                        if(not studentDateOfRegistrationYear == None and not studentDateOfRegistrationYear == 'X'):
-                            studentCourse = getStudentCourse()
-                            dateOfBirth = getStrDateFormat(studentDateOfBirth)
-                            registeredDate = getStrDateFormat(studentDateOfRegistrationYear)
-                            studentData.append([studentId, studentName, dateOfBirth, 
-                                                registeredDate, studentCourse])
-                            print("Record added successfully")
+        if(not studentId == None and not studentId == 'X'):
+            studentName = getStudentName()
+            if(not studentName == "" and not studentName == 'X'):
+                studentDateOfBirth = getStudentDateOfBirth()
+                if(not studentDateOfBirth == None and not studentDateOfBirth == 'X'):
+                    studentDateOfRegistrationYear = getStudentDateOfRegistration () 
+                    if(not studentDateOfRegistrationYear == None and not studentDateOfRegistrationYear == 'X'):
+                        studentCourse = getStudentCourse()
+                        studentData.append([studentId, studentName, studentDateOfBirth, 
+                                            studentDateOfRegistrationYear, studentCourse])
+                        print("Record added successfully")
 
-            option = input("Continue add another new record (Y/N)?")
+        print("Continue add another new record (Y/N)? ")
+        option = input()
 
-            if(option == 'N'):
-                break
-            elif(option == 'Y'):
-                pass
-            else:
-                print("Error, invalid option")
+        if(option.upper() == 'N'):
+            break
+        elif(option.upper() == 'Y'):
+            pass
         else:
             print("Student ID already exists, please try again")
             break
@@ -202,9 +210,12 @@ def programStart():
     global courseDist
     courseDist = {'IT':'Information Technology', 'CS':'Computer Science', 'ME':'Mechanical Engineering'}
     global studentData
+    # studentData = [["1","2"],["3","4"]] dummy
     studentData = []
-    menu()
+    while (True):
+        menu()
 
+# main
 def main():
     programStart()
 
