@@ -1,6 +1,6 @@
 import datetime
 
-def mainMenu():
+def mainMenuDisplay():
     print("")
     print("-----------------------------------")
     print ("1: Add New Student Data")
@@ -21,7 +21,7 @@ def menu():
     option = 0
     run = True
     while (run == True):
-        mainMenu()
+        mainMenuDisplay()
         option = input("Please input option no: ")
         if (option == "1"):
             addNewStudent()
