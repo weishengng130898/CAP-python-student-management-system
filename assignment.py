@@ -86,7 +86,7 @@ def getStudentId():
 def checkDateValid(year, month, day):
     correctDate = None
     try:
-        date = datetime.datetime(int(year), int(month), int(day))
+        date = datetime.date(int(year), int(month), int(day))
         correctDate = True
     except ValueError:
         correctDate = False
