@@ -254,6 +254,7 @@ def fromDobToAge(born):
 def checkRegistrationDateIntervalValid(dob, minLimit, maxLimit):
     print(dob)
     age = fromDobToAge(dob)
+    print("User age:" + age)
     if (int(age) >= int(minLimit)):
         if (int(age) <= int(maxLimit)):
             return True
