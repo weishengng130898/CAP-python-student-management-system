@@ -357,6 +357,12 @@ def printInfo():
     else:
         print("There is no data recorded")
 
+def loadFromTextFileStudentData():
+    pass
+
+def writeToTextFileStudentData():
+    pass
+
 def programStart():
     global courseDist
     courseDist = {'IT':['Information Technology','18','21'], 'CS':['Computer Science','18','21'], 'ME':['Mechanical Engineering','20','22']}
