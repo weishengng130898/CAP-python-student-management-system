@@ -100,7 +100,7 @@ def getStudentDateOfBirth():
         dateOfBirthDay = input("Day: (DD): ")
         datevalid = checkDateValid(dateOfBirthYear, dateOfBirthMonth, dateOfBirthDay)
         if (dateOfBirthYear.upper() == "X" or dateOfBirthMonth.upper() == "X" or dateOfBirthDay.upper() == "X"):
-            return studentDateOfBirth 
+            return dateOfBirthYear 
         elif (dateOfBirthYear.replace(" ","") == "" or dateOfBirthMonth.replace(" ","") == "" or dateOfBirthDay.replace(" ","") == ""):
             print("Student date of birth (Year, Month, Day) cannot be empty and must be valid date")       
         elif(datevalid == False):    
@@ -157,11 +157,10 @@ def getStudentCourse():
 def addNewStudent():
     print("")
     studentName = ""
-    studentID = None
+    studentId = None
     studentDateOfBirth = None
     studentDateOfRegistration = None
     studentCourse = ""
-    result = False
     while (True):
         studentId = getStudentId()
         if(not studentId == None and not studentId == 'X'):
