@@ -14,7 +14,7 @@ def mainMenuDisplay():
 def printCourse():
     print("--------Course List----------------")
     for x in courseDist:
-        print(x, ' - ', courseDist[x])
+        print(x, ' - ', courseDist[x][0])
     print("-----------------------------------")
 
 def menu():
@@ -249,9 +249,9 @@ def modifyStudentData():
             
             for x in studentData:
                 if(str(id) == str(x[0])):
-                    for shorForm, fullName in courseDist.items():
+                    for shorForm, item in courseDist.items():
                         if (str(x[4]) == shorForm):
-                            fullCourseName = fullName
+                            fullCourseName = item[0]
                     print("Student details")
                     print("Student id: " + x[0])
                     print("Student name: " + x[1])
@@ -333,7 +333,7 @@ def printInfo():
 
 def programStart():
     global courseDist
-    courseDist = {'IT':'Information Technology', 'CS':'Computer Science', 'ME':'Mechanical Engineering'}
+    courseDist = {'IT':['Information Technology','18','21'], 'CS':['Computer Science','18','21'], 'ME':['Mechanical Engineering','20','22']}
     global studentData
     studentData = []
     runStatus = True
