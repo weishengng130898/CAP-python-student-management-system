@@ -138,6 +138,12 @@ def checkCourseValid(course):
     else: 
         return False
 
+def compareDates(dateOfBirth, registrationDate):
+    validFlag = False
+    if dateOfBirth < registrationDate:
+        validFlag = True
+    return validFlag
+
 def getStudentCourse():
     printCourse()
     courseValid = False
@@ -161,6 +167,7 @@ def addNewStudent():
     studentDateOfBirth = None
     studentDateOfRegistration = None
     studentCourse = ""
+    isValid = False
     while (True):
         studentId = getStudentId()
         if(not studentId == None and not studentId == 'X'):
@@ -170,27 +177,29 @@ def addNewStudent():
                 if(not studentDateOfBirth == None and not studentDateOfBirth == 'X'):
                     studentDateOfRegistration = getStudentDateOfRegistration () 
                     if(not studentDateOfRegistration == None and not studentDateOfRegistration == 'X'):
-                        studentCourse = getStudentCourse().upper()
-                        dateOfBirth = formatStrDateFormat(studentDateOfBirth)
-                        registrationDate = formatStrDateFormat(studentDateOfRegistration)
-                        studentData.append([studentId, studentName, dateOfBirth, 
+                        isValid = compareDates(studentDateOfBirth,studentDateOfRegistration)
+                        if(isValid == True):    
+                            studentCourse = getStudentCourse().upper()
+                            dateOfBirth = formatStrDateFormat(studentDateOfBirth)
+                            registrationDate = formatStrDateFormat(studentDateOfRegistration)
+                            studentData.append([studentId, studentName, dateOfBirth, 
                                             registrationDate, studentCourse])
-                        print("Record added successfully")
-
-        option = ""
-        while (not option.upper() == 'N' and not option.upper() == 'Y'):
-            print("Continue add another new record Y = Yes/ N = No (Y/N)? ")
-            option = input()
+                            print("Record added successfully")
+                        else:
+                            print("Date of registration cannot be earlier than date of birth")
+        if(isValid == True):
+            option = ""
+            while (not option.upper() == 'N' and not option.upper() == 'Y'):
+                print("Continue add another new record Y = Yes/ N = No (Y/N)? ")
+                option = input()
+                if(option.upper() == 'N'):
+                    option = 'N'
+                elif(option.upper() == 'Y'):
+                    pass
+                else:
+                    print("Error, invalid option")
             if(option.upper() == 'N'):
-                option = 'N'
-            elif(option.upper() == 'Y'):
-                pass
-            else:
-                print("Error, invalid option")
-        
-        if(option.upper() == 'N'):
-            break
-
+                break
 
 def displayModificationMenu():
     print("-----------------------------------")
