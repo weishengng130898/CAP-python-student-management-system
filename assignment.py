@@ -94,7 +94,6 @@ def checkDateValid(year, month, day):
 
 def getStudentDateOfBirth():
     while (True):
-        dateValid = False
         print("Please enter date of birth (digit only), 'X' to exit\n")
         dateOfBirthYear = input("Year (YYYY): ")
         dateOfBirthMonth = input("Month (MM): ")
@@ -112,7 +111,6 @@ def getStudentDateOfBirth():
 
 def getStudentDateOfRegistration():
     while (True):
-        dateValid = False
         print("Please enter date of registration (digit only)")
         dateOfRegistrationYear = input("Year (YYYY): ")
         dateOfRegistrationMonth = input("Month (MM): ")
