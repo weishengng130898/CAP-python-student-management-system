@@ -11,11 +11,19 @@ def mainMenuDisplay():
     print("-----------------------------------")
     print("\n")
 
-def printCourse():
+def printCourseMenu():
     print("--------Course List----------------")
     for x in courseDist:
         print(x, ' - ', courseDist[x][0])
     print("-----------------------------------")
+
+def printCourseDetails():
+    print("----------------------Course List-----------------------")
+    for x in courseDist:
+        print("{:<6} {:<35} {:<12} {:<12}" .format("Course" , "Coourse Name" , "Min age" , "max age"))
+        print("{:<6} {:<35} {:<12} {:<12}" .format(x  , courseDist[x][0] , courseDist[x][1] , courseDist[x][2]))
+    print("--------------------------------------------------------")
+
 
 def menu():
     option = 0
@@ -145,7 +153,7 @@ def compareDates(dateOfBirth, registrationDate):
     return validFlag
 
 def getStudentCourse():
-    printCourse()
+    printCourseDetails()
     courseValid = False
     while (True):
         print("Please enter student course(short form), 'X' to exit")
@@ -178,13 +186,16 @@ def addNewStudent():
                     studentDateOfRegistration = getStudentDateOfRegistration () 
                     if(not studentDateOfRegistration == None and not studentDateOfRegistration == 'X'):
                         isValid = compareDates(studentDateOfBirth,studentDateOfRegistration)
+                        studentCourse = getStudentCourse().upper()
+                        isValidAge = checkRegistrationDateIntervalValid(datetime.datetime.strptime(str(studentDateOfBirth), '%Y-%m-%d'),courseDist[studentCourse][1],courseDist[studentCourse][2])
+                      
                         if(isValid == True):    
-                            studentCourse = getStudentCourse().upper()
-                            dateOfBirth = formatStrDateFormat(studentDateOfBirth)
-                            registrationDate = formatStrDateFormat(studentDateOfRegistration)
-                            studentData.append([studentId, studentName, dateOfBirth, 
-                                            registrationDate, studentCourse])
-                            print("Record added successfully")
+                            if (isValidAge == True):
+                                dateOfBirth = formatStrDateFormat(studentDateOfBirth)
+                                registrationDate = formatStrDateFormat(studentDateOfRegistration)
+                                studentData.append([studentId, studentName, dateOfBirth, 
+                                                registrationDate, studentCourse])
+                                print("Record added successfully")
                         else:
                             print("Date of registration cannot be earlier than date of birth")
         if(isValid == True):
@@ -236,6 +247,22 @@ def modifyDateOfRegistrationWithId(id):
         if(str(id) == str(x[0])):
             x[3] = newDateOfBirthWithId
 
+def fromDobToAge(born):
+    today = datetime.date.today()
+    return today.year - born.year - ((today.month, today.day) < (born.month, born.day))
+
+def checkRegistrationDateIntervalValid(dob, minLimit, maxLimit):
+    print(dob)
+    age = fromDobToAge(dob)
+    if (int(age) >= int(minLimit)):
+        if (int(age) <= int(maxLimit)):
+            return True
+        else:
+            print("Applicant does not meet the requirement for the program (age greater)")
+    else:
+        print("Applicant does not reach minimum age for the program")
+        return False
+
 def modifyStudentData():
     idExistStatus = False
 
@@ -257,7 +284,7 @@ def modifyStudentData():
                     print("Student name: " + x[1])
                     print("Student date of birth: " + x[2])
                     print("Student registration date: " + x[3])
-                    print("Student course: " + x[4] + ' - ' + fullCourseName)
+                    print("Student course: " + x[4] + ' - ' + fullCourseName[0])
 
             displayModificationMenu()
             
@@ -283,6 +310,8 @@ def modifyStudentData():
 
 def searchStudent():
     search_item = input("Student id: ")
+    if(search_item.replace(" ","") == ""):
+        print("Empty input detected")
     searchCount = 0
     if not search_item:
         print("No input detected")
@@ -300,7 +329,7 @@ def searchStudent():
                     print("Student date of birth: " + x[2])
                     print("Student registration date: " + x[3])
 
-                    print("Student course: " + x[4] + " - " + fullCourseName)
+                    print("Student course: " + x[4] + " - " + fullCourseName[0])
                     
                     searchCount = searchCount + 1
             if searchCount == 0:
@@ -309,7 +338,7 @@ def searchStudent():
             print("There is no data recorded")
 
 def printInfo():
-    printCourse()
+    printCourseMenu()
     course = input("Course: ").upper()
     outputList = []
 
@@ -321,13 +350,10 @@ def printInfo():
             else:
                 outputList.append(x)
         if len(outputList) > 0:
+            print ("{:<4} {:<25} {:<10} {:<10} {:<20}".format('id','name','DOB','reg. date', 'course'))
             for x in outputList:
-                print("Student details")
-                print("Student id: ", x[0])
-                print("Student name: ", x[1])
-                print("Student date of birth: ", x[2])
-                print("Student registration date: ", x[3])
-                print("Student course: ", x[4])
+                print ("{:<4} {:<25} {:<10} {:<10} {:<20}".format(x[0],x[1],x[2],x[3],x[4]))
+
     else:
         print("There is no data recorded")
 
