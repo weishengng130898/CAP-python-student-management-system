@@ -11,12 +11,6 @@ def mainMenuDisplay():
     print("-----------------------------------")
     print("\n")
 
-def printCourseMenu():
-    print("--------Course List----------------")
-    for x in courseDist:
-        print(x, ' - ', courseDist[x][0])
-    print("-----------------------------------")
-
 def printCourseDetails():
     print("----------------------Course List-----------------------")
     for x in courseDist:

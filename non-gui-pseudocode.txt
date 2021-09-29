@@ -1,0 +1,378 @@
+
+FUNCTION mainMenuDisplay():
+	PRINT("")
+    	PRINT("-----------------------------------")
+    	PRINT ("1: Add New Student Data")
+    	PRINT ("2. Modify Existing Student Data")
+    	PRINT ("3. Search for specific Record")
+    	PRINT ("4. Print specific Records")
+    	PRINT ("5. Exit")
+    	PRINT("-----------------------------------")
+    	PRINT("\n")
+
+FUNCTION printCourseDetails():
+    PRINT("----------------------Course List-----------------------")
+    FOREACH X in courseDist:
+        PRINT("{:<6} {:<35} {:<12} {:<12}" .format("Course" , "Coourse Name" , "Min age" , "max age"))
+        PRINT("{:<6} {:<35} {:<12} {:<12}" .format(x  , courseDist[x][0] , courseDist[x][1] , courseDist[x][2]))
+    	PRINT("--------------------------------------------------------")
+
+FUNCTION menu():
+    SET option = 0
+    SET run = True
+    WHILE run IS True:
+        mainMenuDisplay()
+        option = USER_INPUT("Please input option no: ")
+        IF option is "1":
+            addNewStudent()
+        ELSEIF option is "2":
+            modifyStudentData()
+        ELSEIF option is "3":
+            searchStudent()
+        ELSEIF option is "4":
+            printInfo()
+        ELSEIF option is "5":
+            run = False
+            RETURN run 
+        ELSE:
+            print ("Unvalid option, please enter again")
+
+
+FUNCTION getStudentName():
+    SET studentName = ""
+    WHILE True:
+        print("Please enter student name, 'X' to exit")
+        studentName = USER_INPUT()
+        IF studentName IS "X":
+            return studentName  
+        ELSE IF studentName.replace(" ","") == "":
+            PRINT("Student name cannot be empty")
+        ELSE:
+            RETURN studentName  
+
+FUNCTION checkStudentExist(id):
+    SET flag = False
+    IF length of studentData > 0:
+        FOREACH x IN studentData:
+            IF STRING(id) IS EQUAL TO STRING(x[0]):
+                flag = True
+    RETURN flag
+
+FUNCTION getStudentId():
+    WHILE True:
+        PRINT("Please enter student id, 'X' to exit")
+        SET idExistStatus = False
+        studentId = USER_INPUT()
+        idExistStatus = checkStudentExist(studentId)
+        
+        IF (studentId.upper() == "X"):
+            RETURN studentId 
+        ELSE IF (studentId.replace(" ","") IS EQUAL TO "" OR NOT studentId.isdigit()):
+            PRINT("Student name cannot be empty and must be digit")
+        ELSE:
+            IF idExistStatus IS True:
+                option = ""
+                WHILE option IS NOT EQUAL TO "" OR NOT option.upper() IS EQUAL TO'R' OR NOT option.upper() == 'X'):
+                    PRINT("Student id exist, Press X to exit, R to reenter")
+                    option = input()
+                    IF(STRING(option.upper()) IS EQUAL TO'R'):
+                        BREAK
+                    ELSE IF(STRING(option.upper()) IS EQUAL TO 'X'):
+                        RETURN None
+                    ELSE:
+                        PRINT("Error, Invalid option")
+            ELSE:
+                RETURN studentId
+
+FUNCTION checkDateValid(year, month, day):
+    SET correctDate = None
+    TRY:
+        date = datetime.date(int(year), int(month), int(day))
+        SET correctDate = True
+    EXCEPT ValueError:
+        SET correctDate = False
+    RETURN correctDate 
+
+FUNCTION getStudentDateOfBirth():
+    WHILE True:
+        PRINT("Please enter date of birth (digit only), 'X' to exit\n")
+        dateOfBirthYear = input("Year (YYYY): ")
+        dateOfBirthMonth = input("Month (MM): ")
+        dateOfBirthDay = input("Day: (DD): ")
+        datevalid = checkDateValid(dateOfBirthYear, dateOfBirthMonth, dateOfBirthDay)
+        IF dateOfBirthYear.upper() IS "X" OR dateOfBirthMonth.upper() IS "X" OR dateOfBirthDay.upper() IS "X":
+            RETURN dateOfBirthYear 
+        ELSE IF dateOfBirthYear.replace(" ","") IS "" or dateOfBirthMonth.replace(" ","") IS "" OR dateOfBirthDay.replace(" ","") IS ""):
+            PRINT("Student date of birth (Year, Month, Day) cannot be empty and must be valid date")       
+        ELSE IF datevalid IS False:    
+            PRINT("Error, please enter valid date of birth")
+        ELSE:
+            studentDateOfBirth = datetime.date(int(dateOfBirthYear), int(dateOfBirthMonth), int(dateOfBirthDay))
+            RETURN studentDateOfBirth
+
+FUNCTION getStudentDateOfRegistration():
+    WHILE True:
+        PRINT("Please enter date of registration (digit only)")
+        dateOfRegistrationYear = input("Year (YYYY): ")
+        dateOfRegistrationMonth = input("Month (MM): ")
+        dateOfRegistrationDay = input("Day: (DD): ")
+        datevalid = checkDateValid(dateOfRegistrationYear, dateOfRegistrationMonth, dateOfRegistrationDay)
+        IF dateOfRegistrationYear.upper() IS "X" OR dateOfRegistrationMonth.upper() IS "X" OR dateOfRegistrationDay.upper() IS "X":
+            RETURN dateOfRegistrationYear
+        ELSE IF(dateOfRegistrationYear.replace(" ","") IS "" or dateOfRegistrationMonth.replace(" ","") IS "" or dateOfRegistrationDay.replace(" ","") IS ""):
+            PRINT("Student date of registration  (Year, Month, Day) cannot be empty and must be valid date")
+        ELSE IF datevalid IS False:    
+            PRINT("Error, please enter valid date of registration")
+        ELSE:
+            studentDateOfRegistration = datetime.date(int(dateOfRegistrationYear), int(dateOfRegistrationMonth), int(dateOfRegistrationDay))
+            RETURN studentDateOfRegistration
+
+FUNCTION formatStrDateFormat(date):
+    SET dateStr = date.strftime("%d")
+    SET monthStr = date.strftime("%m")
+    SET yearStr = date.strftime("%Y")
+    RETURN dateStr + "/" + monthStr + "/" + yearStr
+    
+FUNCTION checkCourseValid(course):
+    IF (course.upper() in courseDist):
+        RETURN True
+    ELSE: 
+        RETURN False
+
+FUNCTION compareDates(dateOfBirth, registrationDate):
+    SET validFlag = False
+    IF dateOfBirth < registrationDate:
+        validFlag = True
+    RETURN validFlag
+
+FUNCTION getStudentCourse():
+    PRINTCourseDetails()
+    SET courseValid = False
+    WHILE True:
+        PRINT("Please enter student course(short form), 'X' to exit")
+        course = input()
+        IF(not course.upper() == 'X'):
+            courseValid = checkCourseValid(course)
+            IF(courseValid == True):
+                RETURN course
+            ELSE:
+                PRINT("Error, Unvalid course")
+        ELSE:
+            RETURN course
+
+
+FUNCTION addNewStudent():
+    PRINT("")
+    SET studentName = ""
+    SET studentId = None
+    SET studentDateOfBirth = None
+    SET studentDateOfRegistration = None
+    SET studentCourse = ""
+    SET isValid = False
+    WHILE True:
+        studentId = getStudentId()
+        IF studentId IS NOT None AND studentId IS NOT 'X':
+            studentName = getStudentName()
+            IF(not studentName IS "" AND studentName IS NOT 'X':
+                studentDateOfBirth = getStudentDateOfBirth()
+                IF studentDateOfBirth IS NOT None AND studentDateOfBirth IS NOT 'X':
+                    studentDateOfRegistration = getStudentDateOfRegistration () 
+                    IF studentDateOfRegistration IS NOT None AND studentDateOfRegistration IS NOT 'X':
+                        isValid = compareDates(studentDateOfBirth,studentDateOfRegistration)
+                        studentCourse = getStudentCourse().upper()
+                        isValidAge = checkRegistrationDateIntervalValid(datetime.datetime.strptime(str(studentDateOfBirth), '%Y-%m-%d'),courseDist[studentCourse][1],courseDist[studentCourse][2])
+                      
+                        IF isValid IS True:    
+                            IF isValidAge IS True:
+                                dateOfBirth = formatStrDateFormat(studentDateOfBirth)
+                                registrationDate = formatStrDateFormat(studentDateOfRegistration)
+                                studentData.append([studentId, studentName, dateOfBirth, 
+                                                registrationDate, studentCourse])
+                                PRINT("Record added successfully")
+                        ELSE:
+                            PRINT("Date of registration cannot be earlier than date of birth")
+        IF isValid IS True:
+            option = ""
+            WHILE (not option.upper() == 'N' and not option.upper() == 'Y'):
+                PRINT("Continue add another new record Y = Yes/ N = No (Y/N)? ")
+                option = USER_INPUT()
+                IF(option.upper() == 'N'):
+                    option = 'N'
+                ELSE IF(option.upper() == 'Y'):
+                    PASS
+                ELSE:
+                    PRINT("Error, invalid option")
+            IF option.upper() IS 'N':
+                BREAK
+
+FUNCTION displayModIFicationMenu():
+    PRINT("-----------------------------------")
+    PRINT ("1: Name")
+    PRINT ("2. Course")
+    PRINT ("3. Date of Birth")
+    PRINT ("4. Date of Registration")
+    PRINT ("5. Exit")
+    PRINT("-----------------------------------")
+
+FUNCTION modifyNameWithId(id):
+    SET newName = getStudentName()
+    FOREACH x IN studentData:
+        IF STRING(id) IS EQUAL TO STRING(x[0]):
+            x[1] = newName
+        
+FUNCTION modifyCourseWithId(id):
+    newCourse = getStudentCourse()
+    FOREACH x IN studentData:
+        IF STRING(id) IS EQUAL TO STRING(x[0]):
+            x[4] = newCourse
+
+FUNCTION modifyDateOfBirthWithId(id):
+    newDateOfBirthWithId = getStudentDateOfBirth()
+    newDateOfBirthWithId = getStudentDateOfBirth(newDateOfBirthWithId)
+    FOREACH x IN studentData:
+        IF STRING(id) IS EQUAL TO STRING(x[0]):
+            x[2] = newDateOfBirthWithId
+
+FUNCTION modifyDateOfRegistrationWithId(id):
+    newDateOfBirthWithId = getStudentDateOfRegistration()
+    newDateOfBirthWithId = formatStrDateFormat(newDateOfBirthWithId)
+    FOREACH x IN studentData:
+        IF STRING(id) IS EQUAL TO str(x[0]):
+            x[3] = newDateOfBirthWithId
+
+FUNCTION fromDobToAge(born):
+    SET today = datetime.date.today()
+    RETURN today.year - born.year - ((today.month, today.day) < (born.month, born.day))
+
+FUNCTION checkRegistrationDateIntervalValid(dob, minLimit, maxLimit):
+    PRINT(dob)
+    age = fromDobToAge(dob)
+    PRINT("User age:" + age)
+    IF INTEGER(age) IS MORE THAN OR EQUAL TO INTEGER(minLimit):
+        IF INTEGER(age) IS LESS THAN OR EQUAL TO INTEGER(maxLimit):
+            RETURN True
+        ELSE:
+            PRINT("Applicant does not meet the requirement for the program (age greater)")
+    ELSE:
+        PRINT("Applicant does not reach minimum age for the program")
+        RETURN False
+
+FUNCTION modifyStudentData():
+    SET idExistStatus = False
+
+    id = USER_INPUT("Please enter student id to modify: ")
+
+    IF LENGTH OF studentData IS MORE THAN 0:
+        
+        idExistStatus = checkStudentExist(id)
+        
+        IF idExistStatus IS True:
+            
+            FOREACH x IN studentData:
+                IF STRING(id) IS STRING(x[0]):
+                    FOR shorForm, item in courseDist.items():
+                        IF STRING(x[4]) IS EQUAL TO shorForm:
+                            fullCourseName = item[0]
+                    PRINT("Student details")
+                    PRINT("Student id: " + x[0])
+                    PRINT("Student name: " + x[1])
+                    PRINT("Student date of birth: " + x[2])
+                    PRINT("Student registration date: " + x[3])
+                    PRINT("Student course: " + x[4] + ' - ' + fullCourseName[0])
+
+            displayModificationMenu()
+            
+            option = USER_INPUT("Please select element to modify: ") 
+
+            IF option == "1":
+                modifyNameWithId(id)
+            ELSE IF option == "2":
+                modifyCourseWithId(id)
+            ELSE IF option IS "3":
+                modifyDateOfBirthWithId(id)
+            ELSE IF option IS "4":
+                modifyDateOfRegistrationWithId(id)
+            ELSE:
+                PRINT("Error, Please input the available option only")
+            
+
+        IF idExistStatus IS False:
+            PRINT("Error student record id - " + id + " not found")
+                
+    ELSE:
+        PRINT("No record found")
+
+FUNCTION searchStudent():
+    search_item = USER_INPUT("Student id: ")
+    IF search_item.replace(" ","") IS EQUAL TO "":
+        PRINT("Empty input detected")
+    SET searchCount = 0
+    IF search_item IS EMPTY:
+        PRINT("No input detected")
+    ELSE:
+        IF len(studentData) IS MORE THAN 0:
+            PRINT("Found search results: \n")
+            FOREACH x IN studentData:
+                IF search_item IN x[0]:
+                    FOR shorForm, fullName IN courseDist.items():
+                        IF STRING(x[4]) IS EQUAL TO shorForm:
+                            fullCourseName = fullName
+                    PRINT("Student details")
+                    PRINT("Student id: " + x[0])
+                    PRINT("Student name: " + x[1])
+                    PRINT("Student date of birth: " + x[2])
+                    PRINT("Student registration date: " + x[3])
+
+                    PRINT("Student course: " + x[4] + " - " + fullCourseName[0])
+                    
+                    searchCount = searchCount + 1
+            IF searchCount == 0:
+                PRINT("No relevant results found")
+        ELSE:
+            PRINT("There is no data recorded")
+
+FUNCTION PRINTInfo():
+    PRINTCourseMenu()
+    course = USER_INPUT("Course: ").upper()
+    outputList = []
+
+    IF LENGTH OF studentData IS MORE THAN 0:        
+        FOREACH x IN studentData
+            IF STRING(x[4]) IS NOT IN course:
+                IF course IS IN STRING(courseDist.values()).upper(): 
+                    outputList.append(x)
+            ELSE:
+                outputList.append(x)
+        IF LENGTH OF outputList IS MORE THAN 0:
+            PRINT ("{:<4} {:<25} {:<10} {:<10} {:<20}".format('id','name','DOB','reg. date', 'course'))
+            FOREACH x IN outputList:
+                PRINT ("{:<4} {:<25} {:<10} {:<10} {:<20}".format(x[0],x[1],x[2],x[3],x[4]))
+
+    ELSE:
+        PRINT("There is no data recorded")
+
+FUNCTION loadFromTextFileStudentData():
+    PASS
+
+FUNCTION writeToTextFileStudentData():
+    PASS
+
+FUNCTION programStart():
+    SET courseDist TO GLOBAL VARIABLE
+    courseDist = {'IT':['Information Technology','18','21'], 'CS':['Computer Science','18','21'], 'ME':['Mechanical Engineering','20','22']}
+    SET studentData TO GLOBAL VARIABLE
+    SET studentData = []
+    SET runStatus = True
+    WHILE runStatus IS True:
+        runStatus = menu()
+
+# main
+FUNCTION main():
+    programStart()
+
+IF __name__ == "__main__":
+    main()
+
+
+
+
