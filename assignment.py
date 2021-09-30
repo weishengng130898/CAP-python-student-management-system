@@ -1,4 +1,7 @@
 import datetime
+import os
+from os.path import exists
+import json
 
 def mainMenuDisplay():
     print("")
@@ -190,6 +193,7 @@ def addNewStudent():
                                 studentData.append([studentId, studentName, dateOfBirth, 
                                                 registrationDate, studentCourse])
                                 print("Record added successfully")
+                                writeToTextFileStudentData()
                         else:
                             print("Date of registration cannot be earlier than date of birth")
         if(isValid == True):
@@ -248,7 +252,7 @@ def fromDobToAge(born):
 def checkRegistrationDateIntervalValid(dob, minLimit, maxLimit):
     print(dob)
     age = fromDobToAge(dob)
-    print("User age:" + age)
+    print("User age:", age)
     if (int(age) >= int(minLimit)):
         if (int(age) <= int(maxLimit)):
             return True
@@ -295,7 +299,7 @@ def modifyStudentData():
                 modifyDateOfRegistrationWithId(id)
             else:
                 print("Error, Please input the available option only")
-            
+            writeToTextFileStudentData()
 
         if(idExistStatus == False):
             print("Error student record id - " + id + " not found")
@@ -333,7 +337,7 @@ def searchStudent():
             print("There is no data recorded")
 
 def printInfo():
-    printCourseMenu()
+    printCourseDetails()
     course = input("Course: ").upper()
     outputList = []
 
@@ -353,10 +357,19 @@ def printInfo():
         print("There is no data recorded")
 
 def loadFromTextFileStudentData():
-    pass
+    with open("studentData.json", 'r') as file:
+        listData = json.load(file)
+        for l in listData:
+            studentData.append(l)
+    file.close()
 
 def writeToTextFileStudentData():
-    pass
+    fileExist = exists("studentData.json")
+    if(fileExist == True):
+        os.remove("studentData.json")
+    with open("studentData.json","w+") as file:
+        json.dump(studentData, file)
+    file.close()
 
 def programStart():
     global courseDist
@@ -364,6 +377,7 @@ def programStart():
     global studentData
     studentData = []
     runStatus = True
+    loadFromTextFileStudentData()
     while (runStatus == True):
         runStatus = menu()
 
