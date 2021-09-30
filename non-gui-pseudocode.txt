@@ -189,6 +189,7 @@ FUNCTION addNewStudent():
                                 studentData.append([studentId, studentName, dateOfBirth, 
                                                 registrationDate, studentCourse])
                                 PRINT("Record added successfully")
+				writeToTextFileStudentData()
                         ELSE:
                             PRINT("Date of registration cannot be earlier than date of birth")
         IF isValid IS True:
@@ -247,12 +248,13 @@ FUNCTION fromDobToAge(born):
 FUNCTION checkRegistrationDateIntervalValid(dob, minLimit, maxLimit):
     PRINT(dob)
     age = fromDobToAge(dob)
-    PRINT("User age:" + age)
+    PRINT("User age:", age)
     IF INTEGER(age) IS MORE THAN OR EQUAL TO INTEGER(minLimit):
         IF INTEGER(age) IS LESS THAN OR EQUAL TO INTEGER(maxLimit):
             RETURN True
         ELSE:
             PRINT("Applicant does not meet the requirement for the program (age greater)")
+        writeToTextFileStudentData()
     ELSE:
         PRINT("Applicant does not reach minimum age for the program")
         RETURN False
@@ -332,7 +334,7 @@ FUNCTION searchStudent():
             PRINT("There is no data recorded")
 
 FUNCTION PRINTInfo():
-    PRINTCourseMenu()
+    printCourseDetails()
     course = USER_INPUT("Course: ").upper()
     outputList = []
 
@@ -352,10 +354,19 @@ FUNCTION PRINTInfo():
         PRINT("There is no data recorded")
 
 FUNCTION loadFromTextFileStudentData():
-    PASS
+    OPEN studentData.json FILE AS READING MODE
+        listData = LOAD JSON DATA FROM FILE
+        FOREACH L IN listData:
+            studentData.append(l)
+    CLOSE FILE
 
 FUNCTION writeToTextFileStudentData():
-    PASS
+    fileExist = IF studentData.json FILE IS FOUND
+    IF fileExist IS TRUE:
+        REMOVE studentData.json FILE
+    OPEN studentData.json FILE AS WRITING MODE
+        DUMP studentData into FILE
+    CLOSE FILE
 
 FUNCTION programStart():
     SET courseDist TO GLOBAL VARIABLE
@@ -363,6 +374,7 @@ FUNCTION programStart():
     SET studentData TO GLOBAL VARIABLE
     SET studentData = []
     SET runStatus = True
+    loadFromTextFileStudentData()
     WHILE runStatus IS True:
         runStatus = menu()
 
